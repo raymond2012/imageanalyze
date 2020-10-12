@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Image Analayze</string>
+    <string name="img_name">Name</string>
+    <string name="img_date">Date</string>
+    <string name="img_count">Count</string>
+    <string name="total_area">Total Area</string>
+    <string name="average_size">Average Size</string>
+    <string name="area_percentage">Area %</string>
+</resources>

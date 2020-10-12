@@ -1,0 +1,3 @@
+include ':app'
+rootProject.name = "Image Analayze"
+include ':openCVLibrary440'

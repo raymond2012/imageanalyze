@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/imCamera"
+        android:title="Camera"/>
+
+    <item android:id="@+id/imStorage"
+    android:title="Storage" />
+
+    <item android:id="@+id/imImageList"
+        android:title="Image List" />
+</menu>
