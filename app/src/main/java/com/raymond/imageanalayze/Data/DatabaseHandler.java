@@ -101,6 +101,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return openCVImage;
     }
 
+    public void deleteOpenCVImage(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(Constants.TABLE_NAME, Constants.KEY_ID + "=?", new String[] {String.valueOf(id)});
+
+        db.close();
+    }
+
     // Get all OpenCVImages
     public List<OpenCVImage> getAllOpenCVImage() {
         SQLiteDatabase db = this.getReadableDatabase();

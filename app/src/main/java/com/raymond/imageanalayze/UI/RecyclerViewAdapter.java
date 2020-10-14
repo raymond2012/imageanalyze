@@ -1,5 +1,6 @@
 package com.raymond.imageanalayze.UI;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.raymond.imageanalayze.Activities.ImageDetailActivity;
+import com.raymond.imageanalayze.Data.DatabaseHandler;
 import com.raymond.imageanalayze.Model.OpenCVImage;
 import com.raymond.imageanalayze.R;
 import com.squareup.picasso.Picasso;
@@ -29,8 +33,10 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private Context context;
-//    private List<ListItem> listItems;
     private List<OpenCVImage> openCVImageList;
+    private AlertDialog.Builder alertDialogBuilder;
+    private AlertDialog dialog;
+    private LayoutInflater inflater;
 
     public RecyclerViewAdapter(Context context, List openCVImageList) {
         this.context = context;
@@ -41,7 +47,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, context);
     }
 
     @Override
@@ -76,33 +82,94 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public ImageView img;
         public TextView name;
         public TextView date;
-//        public TextView count;
+        public Button deleteButton;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, Context ctx) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            context = ctx;
 
             img = (ImageView) itemView.findViewById(R.id.ivImg);
             name = (TextView) itemView.findViewById(R.id.tvTitle);
             date = (TextView) itemView.findViewById(R.id.tvDate);
-//            count = (TextView) itemView.findViewById(R.id.tvCount);
+            deleteButton = (Button) itemView.findViewById(R.id.deleteButton);
+
+            deleteButton.setOnClickListener(this);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    OpenCVImage openCVImage =  openCVImageList.get(position);
+                    Intent intent = new Intent(context, ImageDetailActivity.class);
+                    intent.putExtra("img", openCVImage.getImage());
+                    intent.putExtra("name", openCVImage.getName());
+                    intent.putExtra("date", openCVImage.getDate());
+                    context.startActivity(intent);
+                }
+            });
         }
+
+//        @Override
+//        public void onClick(View view) {
+//            // Get position of the row clicked or tapped.
+//            int position = getAdapterPosition();
+//
+//            OpenCVImage openCVImage =  openCVImageList.get(position);
+////            ListItem item = listItems.get(position);
+//            Intent intent = new Intent(context, ImageDetailActivity.class);
+//            intent.putExtra("img", openCVImage.getImage());
+//            intent.putExtra("name", openCVImage.getName());
+//            intent.putExtra("date", openCVImage.getDate());
+////            intent.putExtra("count", openCVImage.getCount());
+//            context.startActivity(intent);
+//
+//            Toast.makeText(context, openCVImage.getName(), Toast.LENGTH_SHORT).show();
+//        }
 
         @Override
         public void onClick(View view) {
-            // Get position of the row clicked or tapped.
-            int position = getAdapterPosition();
+            switch (view.getId()){
+//                case R.id.editButton:
+//                    break;
+                case R.id.deleteButton:
+                    int position = getAdapterPosition();
+                    OpenCVImage openCVImage = openCVImageList.get(position);
+                    deleteItem(openCVImage.getId());
+                    break;
+            }
+        }
 
-            OpenCVImage openCVImage =  openCVImageList.get(position);
-//            ListItem item = listItems.get(position);
-            Intent intent = new Intent(context, ImageDetailActivity.class);
-            intent.putExtra("img", openCVImage.getImage());
-            intent.putExtra("name", openCVImage.getName());
-            intent.putExtra("date", openCVImage.getDate());
-//            intent.putExtra("count", openCVImage.getCount());
-            context.startActivity(intent);
+        public void deleteItem (final int id) {
+            // Create an AlertDialog
+            alertDialogBuilder = new AlertDialog.Builder(context);
+            inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.confirmation_dialog, null);
 
-            Toast.makeText(context, openCVImage.getName(), Toast.LENGTH_SHORT).show();
+            Button noButton = (Button) view.findViewById(R.id.noButton);
+            Button yesButton = (Button) view.findViewById(R.id.yesButton);
+
+            alertDialogBuilder.setView(view);
+            dialog = alertDialogBuilder.create();
+            dialog.show();
+
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+
+            yesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Delete the item.
+                    DatabaseHandler db = new DatabaseHandler(context);
+                    db.deleteOpenCVImage(id);
+                    openCVImageList.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+                    dialog.dismiss();
+                }
+            });
         }
     }
 }

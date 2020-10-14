@@ -55,8 +55,14 @@
                     android:text="Content"
                     android:textColor="@color/colorGrayDark"
                     android:textSize="16sp" />
-                </LinearLayout>
-        </LinearLayout>
 
+                    <Button
+                        android:id="@+id/deleteButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@android:drawable/ic_delete" />
+
+            </LinearLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

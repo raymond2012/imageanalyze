@@ -6,4 +6,7 @@
     <string name="total_area">Total Area</string>
     <string name="average_size">Average Size</string>
     <string name="area_percentage">Area %</string>
+    <string name="sure_text">Are You Sure</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>

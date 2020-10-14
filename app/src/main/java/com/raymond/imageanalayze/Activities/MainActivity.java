@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case CHOOSE_PHOTO:
                 if (resultCode == RESULT_OK) {
                     handleImage(data);
-                    Log.i("CHOOSE_PHOTO", oriBitmap.toString());
+//                    Log.i("CHOOSE_PHOTO", oriBitmap.toString());
                 }
                 break;
             default:
@@ -281,32 +281,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnChange:
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inScaled = false;
-                oriBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.image_23, options);
-                grayBitmap = grayscale(oriBitmap);
-                if (grayBitmap != null) {
-                    img.setImageBitmap(grayBitmap);
-                }
-                if (flag) {
-                    img.setImageBitmap(oriBitmap);
-                    flag = false;
-                } else {
-                    img.setImageBitmap(grayBitmap);
-                    flag = true;
-                }
-//                Boolean exported = db.exportDatabase();
-//                if (exported) Toast.makeText(this, "Exported in " + db.getFilePath(), Toast.LENGTH_SHORT).show();
-//                else Toast.makeText(this, "Failed to Export", Toast.LENGTH_SHORT).show();
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inScaled = false;
+//                oriBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.image_23, options);
+//                grayBitmap = grayscale(oriBitmap);
+//                if (grayBitmap != null) {
+//                    img.setImageBitmap(grayBitmap);
+//                }
+//                if (flag) {
+//                    img.setImageBitmap(oriBitmap);
+//                    flag = false;
+//                } else {
+//                    img.setImageBitmap(grayBitmap);
+//                    flag = true;
+//                }
+                Boolean exported = db.exportDatabase();
+                if (exported) Toast.makeText(this, "Exported in " + db.getFilePath(), Toast.LENGTH_SHORT).show();
+                else Toast.makeText(this, "Failed to     Export", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnSave:
-                Log.i(TAG, "Image Path " + imagePath);
-                Log.i(TAG, "Gray Bitmap " + grayBitmap);
-
                 if (grayBitmap != null) {
                     try {
-                        savedImagePath = saveBitmap(grayBitmap);
+                        savedImagePath = saveBitmap(oriBitmap);
                         if (savedImagePath != null) {
                             saveOpenCVImageToDB();
                         }
@@ -357,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }else if ("file".equalsIgnoreCase(uri.getScheme())){
                 imagePath=uri.getPath();
             }
-            Log.i(TAG, "image path" + imagePath);
+            Log.i(TAG, "image path: " + imagePath);
             displayImage(imagePath);
         }
     }
